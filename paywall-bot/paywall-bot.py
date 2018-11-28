@@ -27,8 +27,9 @@ reddit = praw.Reddit(client_id=os.environ["REDDIT_ID"],
 
 def main():
 	for comment in reddit.inbox.unread():
-		print(comment)
-		if isinstance(comment, praw.models.Comment):
+		print(comment, comment.subject, comment.new)
+		if not comment.new: continue
+		elif comment.subject == "username mention":
 			try:
 				url = comment.submission.url
 				outline = getOutline(url)
@@ -36,6 +37,8 @@ def main():
 				comment.mark_read()
 			except e:
 				print(repr(e))
+		else:
+			comment.mark_read()
 		
 if __name__ == "__main__":
 	main()
